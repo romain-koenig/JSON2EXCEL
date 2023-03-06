@@ -105,3 +105,4 @@ dist
 
 # Output files
 output/*.xlsx
+input/data.json
