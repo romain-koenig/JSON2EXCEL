@@ -62,17 +62,8 @@ async function fetchData() {
 	});
 
 
-	let rowIndex = 2;
-	data.forEach(record => {
-		let columnIndex = 1;
-		Object.keys(record).forEach(columnName => {
-			ws.cell(rowIndex, columnIndex++)
-				.string(record[columnName])
-		});
-		rowIndex++;
-	});
-
-	wb.write('filename.xlsx');
+	// à partir d'ici, je veux créer un fichier Excel par destinataire (première colonne de la table Airtable)
+	// et y insérer les lignes de la table Airtable correspondant à ce destinataire
 
 
 
