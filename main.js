@@ -1,7 +1,5 @@
 const xl = require('excel4node');
 require('dotenv').config();
-
-
 const fetch = require('node-fetch');
 
 // Remplacez les variables ci-dessous par vos propres clés et ID de table
@@ -20,51 +18,61 @@ async function fetchData() {
 			},
 		});
 		const data = await response.json();
-
-
-		console.log(data);
-		return data;
+		return data.records;
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-
-
 (async () => {
-
 	console.log('Here we start');
-
 	const data = await fetchData();
-
 	console.log(data);
 
-	const wb = new xl.Workbook();
-	const ws = wb.addWorksheet('Worksheet Name');
+	// On crée un objet pour stocker les données filtrées par destinataire
+	const filteredData = {};
 
-	const headingColumnNames = [
-		"GA Property",
-		"Type",
-		"Expires",
-		"Website",
-		"Owner",
-		"IT HQ Proposition",
-		"Priority Level (HQ)",
-		"GCMS",
-		"G24",
-	]
-
-
-	let headingColumnIndex = 1;
-	headingColumnNames.forEach(heading => {
-		ws.cell(1, headingColumnIndex++)
-			.string(heading)
+	// On boucle sur les données pour filtrer par destinataire
+	data.forEach(record => {
+		const recipient = record.fields['Contact'];
+		if (!filteredData[recipient]) {
+			filteredData[recipient] = [];
+		}
+		filteredData[recipient].push(record.fields);
 	});
 
+	// On boucle sur les données filtrées pour créer un fichier Excel par destinataire
+	Object.keys(filteredData).forEach(recipient => {
+		const wb = new xl.Workbook();
+		const ws = wb.addWorksheet('Worksheet Name');
 
-	// à partir d'ici, je veux créer un fichier Excel par destinataire (première colonne de la table Airtable)
-	// et y insérer les lignes de la table Airtable correspondant à ce destinataire
+		const headingColumnNames = [
+			'GA Property',
+			'Type',
+			'Expires',
+			'Website',
+			'Owner',
+			'IT HQ Proposition',
+			'Priority Level (HQ)',
+			'GCMS',
+			'G24',
+		];
 
+		let headingColumnIndex = 1;
+		headingColumnNames.forEach(heading => {
+			ws.cell(1, headingColumnIndex++).string(heading);
+		});
 
+		// On boucle sur les données filtrées pour les ajouter au fichier Excel correspondant
+		let rowIndex = 2;
+		filteredData[recipient].forEach(row => {
+			let columnIndex = 1;
+			Object.keys(row).forEach(columnName => {
+				ws.cell(rowIndex, columnIndex++).string(row[columnName]);
+			});
+			rowIndex++;
+		});
 
+		wb.write(`./output/${recipient.replace('/', '_')}.xlsx`);
+	});
 })();
