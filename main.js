@@ -46,12 +46,14 @@ function writeJSON(data, filepath) {
 	});
 }
 
+
+
 const localJSON = './input/data.json';
 (async () => {
 	console.log('Here we start');
 
 
-	const callAPI = true;
+	const callAPI = false;
 
 	let data = null;
 
@@ -80,6 +82,43 @@ const localJSON = './input/data.json';
 	uniqueRecipients.forEach(recipient => {
 
 		const wb = new xl.Workbook();
+
+		const migrateStyle = wb.createStyle({
+			font: {
+				color: '#086608',
+			},
+			fill: {
+				type: 'pattern',
+				patternType: 'solid',
+				bgColor: '#c6efce',
+				fgColor: '#c6efce',
+			}
+		});
+
+		const feedbackStyle = wb.createStyle({
+			font: {
+				color: '#9c5700',
+			},
+			fill: {
+				type: 'pattern',
+				patternType: 'solid',
+				bgColor: '#ffeb9c',
+				fgColor: '#ffeb9c',
+			}
+		});
+
+		const noMigrateStyle = wb.createStyle({
+			font: {
+				color: '#9c0006',
+			},
+			fill: {
+				type: 'pattern',
+				patternType: 'solid',
+				bgColor: '#ffc7ce',
+				fgColor: '#ffc7ce',
+			}
+		});
+
 		const recipientData = data.filter(record => record.fields['Contact'] === recipient);
 
 		const ws = wb.addWorksheet(recipient.replaceAll('/', '_'));
@@ -110,6 +149,17 @@ const localJSON = './input/data.json';
 			ws.cell(rowIndex, 4).string(record.fields.Website ? record.fields.Website.toString() : "");
 			ws.cell(rowIndex, 5).string(record.fields["Owner "] ? record.fields["Owner "].toString() : "");
 			ws.cell(rowIndex, 6).string(record.fields["IT HQ Proposition"] ? record.fields["IT HQ Proposition"].toString() : "");
+
+			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Migrate") {
+				ws.cell(rowIndex, 6).style(migrateStyle);
+			}
+			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Waiting for feedback") {
+				ws.cell(rowIndex, 6).style(feedbackStyle);
+			}
+			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Do not migrate" || record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Kill") {
+				ws.cell(rowIndex, 6).style(noMigrateStyle);
+			}
+
 			ws.cell(rowIndex, 7).string(record.fields["Priority Level (HQ)"] ? record.fields["Priority Level (HQ)"].toString() : "");
 			ws.cell(rowIndex, 8).string(record.fields.GCMS ? record.fields.GCMS.toString() : "");
 			ws.cell(rowIndex, 9).string(record.fields.G24 ? record.fields.G24.toString() : "");
