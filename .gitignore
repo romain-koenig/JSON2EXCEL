@@ -106,3 +106,4 @@ dist
 # Output files
 output/*.xlsx
 input/data.json
+output/.~lock.*.xlsx#
