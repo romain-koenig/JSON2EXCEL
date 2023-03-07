@@ -119,6 +119,20 @@ const localJSON = './input/data.json';
 			}
 		});
 
+		const GA4Style = wb.createStyle({
+			font: {
+				color: '#2f75b5',
+			},
+			fill: {
+				type: 'pattern',
+				patternType: 'solid',
+				bgColor: '#ddebf7',
+				fgColor: '#ddebf7',
+			}
+		});
+
+
+
 		const recipientData = data.filter(record => record.fields['Contact'] === recipient);
 
 		const ws = wb.addWorksheet(recipient.replaceAll('/', '_'));
@@ -141,6 +155,17 @@ const localJSON = './input/data.json';
 				.string(heading)
 		});
 
+		ws.column(1).setWidth(16);
+		ws.column(2).setWidth(16);
+		ws.column(3).setWidth(10);
+		ws.column(4).setWidth(40);
+		ws.column(5).setWidth(17);
+		ws.column(6).setWidth(25);
+		ws.column(7).setWidth(16);
+		ws.column(8).setWidth(11);
+		ws.column(9).setWidth(11);
+		ws.column(10).setWidth(11);
+
 		let rowIndex = 2;
 		recipientData.forEach(record => {
 			ws.cell(rowIndex, 1).string(record.fields["GA Property"] ? record.fields["GA Property"].toString() : "");
@@ -158,6 +183,9 @@ const localJSON = './input/data.json';
 			}
 			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Do not migrate" || record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Kill") {
 				ws.cell(rowIndex, 6).style(noMigrateStyle);
+			}
+			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "GA4 property") {
+				ws.cell(rowIndex, 6).style(GA4Style);
 			}
 
 			ws.cell(rowIndex, 7).string(record.fields["Priority Level (HQ)"] ? record.fields["Priority Level (HQ)"].toString() : "");
