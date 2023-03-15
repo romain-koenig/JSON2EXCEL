@@ -140,13 +140,9 @@ const localJSON = './input/data.json';
 		const headingColumnNames = [
 			"GA Property",
 			"Type",
-			"Expires",
 			"Website",
-			"Owner",
 			"IT HQ Proposition",
 			"Priority Level (HQ)",
-			"GCMS",
-			"G24",
 		];
 
 		let headingColumnIndex = 1;
@@ -157,40 +153,32 @@ const localJSON = './input/data.json';
 
 		ws.column(1).setWidth(16);
 		ws.column(2).setWidth(16);
-		ws.column(3).setWidth(10);
-		ws.column(4).setWidth(40);
-		ws.column(5).setWidth(17);
-		ws.column(6).setWidth(25);
-		ws.column(7).setWidth(16);
-		ws.column(8).setWidth(11);
-		ws.column(9).setWidth(11);
-		ws.column(10).setWidth(11);
+		ws.column(3).setWidth(40);
+		ws.column(4).setWidth(25);
+		ws.column(5).setWidth(16);
 
 		let rowIndex = 2;
 		recipientData.forEach(record => {
 			ws.cell(rowIndex, 1).string(record.fields["GA Property"] ? record.fields["GA Property"].toString() : "");
 			ws.cell(rowIndex, 2).string(record.fields.Type ? record.fields.Type.toString() : "");
-			ws.cell(rowIndex, 3).string(record.fields.Expires ? record.fields.Expires.toString() : "");
-			ws.cell(rowIndex, 4).string(record.fields.Website ? record.fields.Website.toString() : "");
-			ws.cell(rowIndex, 5).string(record.fields["Owner "] ? record.fields["Owner "].toString() : "");
-			ws.cell(rowIndex, 6).string(record.fields["IT HQ Proposition"] ? record.fields["IT HQ Proposition"].toString() : "");
+			ws.cell(rowIndex, 3).string(record.fields.Website ? record.fields.Website.toString() : "");
+			ws.cell(rowIndex, 4).string(record.fields["IT HQ Proposition"] ? record.fields["IT HQ Proposition"].toString() : "");
 
 			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Migrate") {
-				ws.cell(rowIndex, 6).style(migrateStyle);
+				ws.cell(rowIndex, 4).style(migrateStyle);
 			}
 			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Waiting for feedback") {
-				ws.cell(rowIndex, 6).style(feedbackStyle);
+				ws.cell(rowIndex, 4).style(feedbackStyle);
 			}
 			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Do not migrate" || record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "Kill") {
-				ws.cell(rowIndex, 6).style(noMigrateStyle);
+				ws.cell(rowIndex, 4).style(noMigrateStyle);
 			}
 			if (record.fields["IT HQ Proposition"] && record.fields["IT HQ Proposition"].toString() === "GA4 property") {
-				ws.cell(rowIndex, 6).style(GA4Style);
+				ws.cell(rowIndex, 4).style(GA4Style);
 			}
 
-			ws.cell(rowIndex, 7).string(record.fields["Priority Level (HQ)"] ? record.fields["Priority Level (HQ)"].toString() : "");
-			ws.cell(rowIndex, 8).string(record.fields.GCMS ? record.fields.GCMS.toString() : "");
-			ws.cell(rowIndex, 9).string(record.fields.G24 ? record.fields.G24.toString() : "");
+			ws.cell(rowIndex, 5).string(record.fields["Priority Level (HQ)"] ? record.fields["Priority Level (HQ)"].toString() : "");
+
 			rowIndex++;
 		});
 
